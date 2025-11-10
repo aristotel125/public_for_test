@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2.6.3 Carousel Designer</title>
+    <title>2.6.2 Carousel Designer</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Oswald:wght@400;700&family=Lato:ital,wght@0,400;0,700;1,400;1,700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
-
-// в этой версии добавлены редакторы для текста (жирный, курсив, подчеркивание). Отключено зумирование в телефоне при частых кликах
 <body>
     <!-- html2canvas обязательно подключаем ДО нашего кода -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
@@ -16,7 +14,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Карусельник 2.6.3</h1>
+            <h1>Карусельник 2.6.2</h1>
             <div style="display: flex; gap: 8px;">
                 <button class="btn-delete" onclick="confirmDeleteSlide()">&#128465; Удалить</button>
                 <button class="btn-download" onclick="toggleDownloadMenu()">⬇️ Скачать</button>
@@ -576,6 +574,9 @@
         </button>
         <button class="format-btn" data-format="underline" title="Подчеркивание (Ctrl+U)">
             <u>U</u>
+        </button>
+        <button class="format-btn" data-format="clear" title="Очистить форматирование">
+            &#129529;
         </button>
     </div>
 
@@ -4720,7 +4721,11 @@ function updateToolbarButtonStates() {
     
     document.querySelectorAll('.format-btn').forEach(btn => {
         const format = btn.dataset.format;
-        btn.classList.toggle('active', formatStates[format] || false);
+        if (format === 'clear') {
+            btn.classList.remove('active');
+        } else {
+            btn.classList.toggle('active', formatStates[format] || false);
+        }
     });
 }
 
@@ -4770,6 +4775,22 @@ function applyFormatting(format) {
     if (!selection.rangeCount) return;
     
     const range = selection.getRangeAt(0);
+    
+    if (format === 'clear') {
+        clearAllFormatting(range);
+        textInput.dispatchEvent(new Event('input', { bubbles: true }));
+        
+        // Обновляем currentSelection после очистки
+        currentSelection = window.getSelection();
+        
+        // Обновляем состояние кнопок
+        setTimeout(() => {
+            updateToolbarButtonStates();
+        }, 10);
+        
+        return;
+    }
+    
     const tagMap = {
         'bold': 'STRONG',
         'italic': 'EM',
@@ -4789,6 +4810,14 @@ function applyFormatting(format) {
     }
     
     textInput.dispatchEvent(new Event('input', { bubbles: true }));
+    
+    // 🔥 ДОБАВЛЕНО: Обновляем currentSelection после любого форматирования
+    currentSelection = window.getSelection();
+    
+    // Обновляем состояние кнопок панели
+    setTimeout(() => {
+        updateToolbarButtonStates();
+    }, 10);
 }
 
 function addFormatting(range, tagName) {
@@ -4802,6 +4831,9 @@ function addFormatting(range, tagName) {
     const newRange = document.createRange();
     newRange.selectNodeContents(wrapper);
     selection.addRange(newRange);
+    
+    // 🔥 ДОБАВЛЕНО: Обновляем глобальную переменную
+    currentSelection = selection;
 }
 
 function removeFormatting(range, tagName) {
@@ -4810,17 +4842,126 @@ function removeFormatting(range, tagName) {
         node = node.parentElement;
     }
     
-    while (node && node !== textInput) {
-        if (node.tagName === tagName) {
-            const parent = node.parentElement;
-            while (node.firstChild) {
-                parent.insertBefore(node.firstChild, node);
-            }
-            parent.removeChild(node);
+    let targetNode = null;
+    let tempNode = node;
+    
+    // Находим узел с форматированием
+    while (tempNode && tempNode !== textInput) {
+        if (tempNode.tagName === tagName) {
+            targetNode = tempNode;
             break;
         }
-        node = node.parentElement;
+        tempNode = tempNode.parentElement;
     }
+    
+    if (targetNode) {
+        const parent = targetNode.parentElement;
+        const childNodes = Array.from(targetNode.childNodes);
+        
+        // Сохраняем первый и последний узел для восстановления выделения
+        const firstNode = childNodes[0];
+        const lastNode = childNodes[childNodes.length - 1];
+        
+        // Перемещаем все дочерние узлы
+        while (targetNode.firstChild) {
+            parent.insertBefore(targetNode.firstChild, targetNode);
+        }
+        parent.removeChild(targetNode);
+        
+        // Восстанавливаем выделение
+        if (firstNode && lastNode) {
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            const newRange = document.createRange();
+            
+            try {
+                if (firstNode.nodeType === Node.TEXT_NODE) {
+                    newRange.setStart(firstNode, 0);
+                } else {
+                    newRange.setStartBefore(firstNode);
+                }
+                
+                if (lastNode.nodeType === Node.TEXT_NODE) {
+                    newRange.setEnd(lastNode, lastNode.length || lastNode.textContent.length);
+                } else {
+                    newRange.setEndAfter(lastNode);
+                }
+                
+                selection.addRange(newRange);
+                
+                // 🔥 ДОБАВЛЕНО: Обновляем глобальную переменную
+                currentSelection = selection;
+            } catch (e) {
+                console.log('Selection error:', e);
+            }
+        }
+    }
+}
+
+function clearAllFormatting(range) {
+    const fragment = range.extractContents();
+    
+    function removeFormattingTags(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            return node.cloneNode(true);
+        }
+        
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            const tagName = node.tagName;
+            if (tagName === 'STRONG' || tagName === 'B' || tagName === 'EM' || tagName === 'I' || tagName === 'U') {
+                const tempDiv = document.createDocumentFragment();
+                Array.from(node.childNodes).forEach(child => {
+                    tempDiv.appendChild(removeFormattingTags(child));
+                });
+                return tempDiv;
+            } else {
+                const newNode = node.cloneNode(false);
+                Array.from(node.childNodes).forEach(child => {
+                    newNode.appendChild(removeFormattingTags(child));
+                });
+                return newNode;
+            }
+        }
+        
+        return node.cloneNode(true);
+    }
+    
+    const cleanedFragment = document.createDocumentFragment();
+    Array.from(fragment.childNodes).forEach(child => {
+        cleanedFragment.appendChild(removeFormattingTags(child));
+    });
+    
+    const childNodes = Array.from(cleanedFragment.childNodes);
+    const firstNode = childNodes[0];
+    const lastNode = childNodes[childNodes.length - 1];
+    
+    range.insertNode(cleanedFragment);
+    
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    
+    if (firstNode && lastNode) {
+        const newRange = document.createRange();
+        try {
+            if (firstNode.nodeType === Node.TEXT_NODE) {
+                newRange.setStart(firstNode, 0);
+            } else {
+                newRange.setStartBefore(firstNode);
+            }
+            
+            if (lastNode.nodeType === Node.TEXT_NODE) {
+                newRange.setEnd(lastNode, lastNode.length || lastNode.textContent.length);
+            } else {
+                newRange.setEndAfter(lastNode);
+            }
+            
+            selection.addRange(newRange);
+            currentSelection = selection;
+        } catch (e) {
+            console.log('Selection error:', e);
+        }
+    }
+    
 }
 
 // Hide toolbar on modal close
