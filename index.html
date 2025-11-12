@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2.6.3 Carousel Designer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.6.2.2 Carousel Designer</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Oswald:wght@400;700&family=Lato:ital,wght@0,400;0,700;1,400;1,700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -14,7 +14,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Карусельник 2.6.3</h1>
+            <h1>Карусельник 2.6.2.2</h1>
             <div style="display: flex; gap: 8px;">
                 <button class="btn-delete" onclick="confirmDeleteSlide()">&#128465; Удалить</button>
                 <button class="btn-download" onclick="toggleDownloadMenu()">⬇️ Скачать</button>
@@ -222,15 +222,13 @@
             <div class="modal-body">
                 <div class="text-input-group">
                     <label>Текст слайда</label>
-                    <div 
+                    <textarea 
                         id="unifiedTextInput" 
-                        class="contenteditable-input"
-                        contenteditable="true"
-                        data-placeholder="Введите текст. Первая строка станет заголовком..."
-                        oninput="handleUnifiedTextInput()"></div>
+                        placeholder="Введите текст. Первая строка станет заголовком..."
+                        rows="6"
+                        oninput="autoResizeTextarea(this); handleUnifiedTextInput()"></textarea>
                     <div style="font-size: 12px; color: #8e8e8e; margin-top: 6px;">
-                        &#129668; Текст до первого переноса строки станет заголовком (макс. 100 символов)<br>
-                        &#128161; Выделите текст и используйте всплывающую панель для форматирования
+                        &#129668; Текст до первого переноса строки станет заголовком (макс. 100 символов)
                     </div>
                 </div>
 
@@ -562,22 +560,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Всплывающая панель форматирования (Telegram стиль) -->
-    <div class="formatting-toolbar" id="formattingToolbar">
-        <button class="format-btn" data-format="bold" title="Жирный (Ctrl+B)">
-            <strong>B</strong>
-        </button>
-        <button class="format-btn" data-format="italic" title="Курсив (Ctrl+I)">
-            <em>I</em>
-        </button>
-        <button class="format-btn" data-format="underline" title="Подчеркивание (Ctrl+U)">
-            <u>U</u>
-        </button>
-        <button class="format-btn" data-format="clear" title="Очистить форматирование">
-            &#129529;
-        </button>
     </div>
 
 </body>
@@ -1039,7 +1021,7 @@
         .slide-title{
             font-size: 32px; 
             font-weight: 700; 
-            margin-bottom: 16px; 
+                margin: 0;
             line-height: 1.2; 
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -1050,12 +1032,10 @@
             line-height: 1.5; 
             word-wrap: break-word;
             white-space: pre-wrap;
+                margin: 0;
         }
 
-        .slide-title:has(br + br),
-        .slide-text:has(br + br) {
-            line-height: 0.6;
-        }
+       
 
         .slide-navigation{
             padding: 3px 0;
@@ -2148,98 +2128,6 @@
             overflow: hidden !important; 
             touch-action: none; 
         }
-
-        /* === СТИЛИ ДЛЯ ФОРМАТИРОВАНИЯ ТЕКСТА === */
-        
-        /* ContentEditable стили */
-        .contenteditable-input {
-            width: 100%;
-            min-height: 120px;
-            max-height: 250px;
-            padding: 12px;
-            border: 1px solid #dbdbdb;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
-            overflow-y: auto;
-            transition: border-color 0.2s;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .contenteditable-input:focus {
-            border-color: #0095f6;
-            outline: none;
-        }
-
-        .contenteditable-input:empty:before {
-            content: attr(data-placeholder);
-            color: #8e8e8e;
-            pointer-events: none;
-        }
-
-        .contenteditable-input strong {
-            font-weight: 700;
-        }
-
-        .contenteditable-input em {
-            font-style: italic;
-        }
-
-        .contenteditable-input u {
-            text-decoration: underline;
-        }
-
-        /* Всплывающая панель форматирования (Telegram стиль) */
-        .formatting-toolbar {
-            position: fixed;
-            display: none;
-            background: #2b2b2b;
-            border-radius: 8px;
-            padding: 6px;
-            gap: 4px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            flex-direction: row;
-        }
-
-        .formatting-toolbar.active {
-            display: flex;
-        }
-
-        .format-btn {
-            width: 38px;
-            height: 38px;
-            border: none;
-            background: transparent;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .format-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .format-btn:active {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .format-btn.active {
-            background: #0095f6;
-        }
-
-        .format-btn strong,
-        .format-btn em,
-        .format-btn u {
-            pointer-events: none;
-        }
     </style>
     
     <script>
@@ -2845,16 +2733,14 @@ function openModal(type){
     const slide = slides?.[currentSlide] || {};
 
     let unifiedText = '';
-    if (slide.title && slide.text) unifiedText = slide.title + '<br>' + slide.text;
+    if (slide.title && slide.text) unifiedText = slide.title + '\n' + slide.text;
     else if (slide.title) unifiedText = slide.title;
     else unifiedText = slide.text || '';
 
     const uniInput = document.getElementById('unifiedTextInput');
     if (uniInput) {
-      uniInput.innerHTML = sanitizeHTML(unifiedText);
-      if (!unifiedText.trim()) {
-        uniInput.innerHTML = '';
-      }
+      uniInput.value = unifiedText;
+      autoResizeTextarea?.(uniInput);
       setTimeout(() => uniInput.focus(), 0);
     }
 
@@ -3237,37 +3123,43 @@ function autoResizeTextarea(textarea) {
 function handleUnifiedTextInput() {
     clearTimeout(previewTimeout);
     previewTimeout = setTimeout(() => {
-        const inputEl = document.getElementById('unifiedTextInput');
-        let fullText = sanitizeHTML(inputEl.innerHTML);
+        let fullText = document.getElementById('unifiedTextInput').value;
         const slide = slides[currentSlide];
         const noTitle = document.getElementById('noTitleCheckbox').checked;
         
-        fullText = fullText.replace(/^(<br\s*\/?>|\s)+/, '');
-        const plainText = stripHTML(fullText);
+        fullText = fullText.replace(/^\s*\n+/, '');
         
-        if (noTitle || !plainText.trim()) {
+        if (noTitle || !fullText.trim()) {
             slide.title = '';
             slide.text = fullText.trim() || '';
         } else {
-            const firstBreakIndex = fullText.search(/<div>|<br\s*\/?>/i);
+            const firstNewlineIndex = fullText.search(/\n/);
             
-            if (firstBreakIndex !== -1) {
-                let title = fullText.substring(0, firstBreakIndex).trim();
-                const titlePlain = stripHTML(title);
-                if (titlePlain.length > 100) {
+            if (firstNewlineIndex !== -1) {
+                let title = fullText.substring(0, firstNewlineIndex).trim();
+                if (title.length > 100) {
                     title = title.substring(0, 100);
                 }
                 slide.title = title;
-                slide.text = fullText.substring(firstBreakIndex).replace(/^(<div>|<br\s*\/?>)+/i, '').trim() || '';
+                slide.text = fullText.substring(firstNewlineIndex + 1).trim() || '';
             } else {
-                const plainText = stripHTML(fullText);
-                if (plainText.length > 100) {
-                    const cutPoint = findHTMLCutPoint(fullText, 100);
-                    slide.title = fullText.substring(0, cutPoint).trim();
-                    slide.text = fullText.substring(cutPoint).trim();
+                const sentenceMatch = fullText.match(/^[^.!?]+[.!?]+/);
+                
+                if (sentenceMatch) {
+                    let title = sentenceMatch[0].trim();
+                    if (title.length > 100) {
+                        title = title.substring(0, 100);
+                    }
+                    slide.title = title;
+                    slide.text = fullText.substring(sentenceMatch[0].length).trim() || '';
                 } else {
-                    slide.title = fullText.trim();
-                    slide.text = '';
+                    if (fullText.length > 100) {
+                        slide.title = fullText.substring(0, 100).trim();
+                        slide.text = fullText.substring(100).trim();
+                    } else {
+                        slide.title = fullText.trim();
+                        slide.text = '';
+                    }
                 }
             }
         }
@@ -3275,83 +3167,6 @@ function handleUnifiedTextInput() {
         renderSlide();
         autoFitFontSize();
     }, 150);
-}
-
-// === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ФОРМАТИРОВАНИЯ === 
-
-function sanitizeHTML(html) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT);
-    
-    const allowed = ['STRONG', 'EM', 'U', 'BR', 'DIV'];
-    const tagMap = { 'B': 'STRONG', 'I': 'EM' };
-    
-    const nodesToReplace = [];
-    let node;
-    while (node = walker.nextNode()) {
-        if (!allowed.includes(node.tagName)) {
-            if (tagMap[node.tagName]) {
-                nodesToReplace.push({ old: node, newTag: tagMap[node.tagName] });
-            } else {
-                while (node.firstChild) {
-                    node.parentNode.insertBefore(node.firstChild, node);
-                }
-                node.parentNode.removeChild(node);
-            }
-        } else {
-            Array.from(node.attributes).forEach(attr => node.removeAttribute(attr.name));
-        }
-    }
-    
-    nodesToReplace.forEach(({ old, newTag }) => {
-        const replacement = doc.createElement(newTag);
-        while (old.firstChild) {
-            replacement.appendChild(old.firstChild);
-        }
-        old.parentNode.replaceChild(replacement, old);
-    });
-    
-    return doc.body.innerHTML;
-}
-
-function stripHTML(html) {
-    const div = document.createElement('div');
-    div.innerHTML = sanitizeHTML(html);
-    return div.textContent || '';
-}
-
-function findHTMLCutPoint(html, maxChars) {
-    const div = document.createElement('div');
-    div.innerHTML = sanitizeHTML(html);
-    
-    const walker = document.createTreeWalker(div, NodeFilter.SHOW_TEXT);
-    let charCount = 0;
-    let lastValidNode = null;
-    let lastValidOffset = 0;
-    
-    let node;
-    while (node = walker.nextNode()) {
-        const nodeLength = node.textContent.length;
-        if (charCount + nodeLength >= maxChars) {
-            lastValidNode = node;
-            lastValidOffset = maxChars - charCount;
-            break;
-        }
-        charCount += nodeLength;
-        lastValidNode = node;
-        lastValidOffset = nodeLength;
-    }
-    
-    if (!lastValidNode) return html.length;
-    
-    const range = document.createRange();
-    range.setStart(div.firstChild || div, 0);
-    range.setEnd(lastValidNode, lastValidOffset);
-    
-    const tempDiv = document.createElement('div');
-    tempDiv.appendChild(range.cloneContents());
-    return tempDiv.innerHTML.length;
 }
 
 function autoFitFontSize() {
@@ -3588,37 +3403,43 @@ function updateShadowColor(value) {
 
 function applyText() {
     const slide = slides[currentSlide];
-    const inputEl = document.getElementById('unifiedTextInput');
-    let fullText = sanitizeHTML(inputEl.innerHTML);
+    let fullText = document.getElementById('unifiedTextInput').value;
     const noTitle = document.getElementById('noTitleCheckbox').checked;
     
     slide.noTitle = noTitle;
-    fullText = fullText.replace(/^(<br\s*\/?>|\s)+/, '');
-    const plainText = stripHTML(fullText);
+    fullText = fullText.replace(/^\s*\n+/, '');
     
-    if (noTitle || !plainText.trim()) {
+    if (noTitle || !fullText.trim()) {
         slide.title = '';
         slide.text = fullText.trim() || '';
     } else {
-        const firstBreakIndex = fullText.search(/<div>|<br\s*\/?>/i);
+        const firstNewlineIndex = fullText.search(/\n/);
         
-        if (firstBreakIndex !== -1) {
-            let title = fullText.substring(0, firstBreakIndex).trim();
-            const titlePlain = stripHTML(title);
-            if (titlePlain.length > 100) {
+        if (firstNewlineIndex !== -1) {
+            let title = fullText.substring(0, firstNewlineIndex).trim();
+            if (title.length > 100) {
                 title = title.substring(0, 100);
             }
             slide.title = title;
-            slide.text = fullText.substring(firstBreakIndex).replace(/^(<div>|<br\s*\/?>)+/i, '').trim() || '';
+            slide.text = fullText.substring(firstNewlineIndex + 1).trim() || '';
         } else {
-            const plainText = stripHTML(fullText);
-            if (plainText.length > 100) {
-                const cutPoint = findHTMLCutPoint(fullText, 100);
-                slide.title = fullText.substring(0, cutPoint).trim();
-                slide.text = fullText.substring(cutPoint).trim();
+            const sentenceMatch = fullText.match(/^[^.!?]+[.!?]+/);
+            
+            if (sentenceMatch) {
+                let title = sentenceMatch[0].trim();
+                if (title.length > 100) {
+                    title = title.substring(0, 100);
+                }
+                slide.title = title;
+                slide.text = fullText.substring(sentenceMatch[0].length).trim() || '';
             } else {
-                slide.title = fullText.trim();
-                slide.text = '';
+                if (fullText.length > 100) {
+                    slide.title = fullText.substring(0, 100).trim();
+                    slide.text = fullText.substring(100).trim();
+                } else {
+                    slide.title = fullText.trim();
+                    slide.text = '';
+                }
             }
         }
     }
@@ -3937,123 +3758,6 @@ function drawOverlay(ctx, width, height, slide) {
     ctx.restore();
 }
 
-function parseFormattedHTML(html) {
-    if (!html) return [];
-    
-    const temp = document.createElement('div');
-    temp.innerHTML = sanitizeHTML(html);
-    
-    const segments = [];
-    
-    function traverse(node, bold = false, italic = false, underline = false) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            const text = node.textContent;
-            if (text) {
-                segments.push({ text, bold, italic, underline });
-            }
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            const tag = node.tagName;
-            const isBold = bold || tag === 'STRONG' || tag === 'B';
-            const isItalic = italic || tag === 'EM' || tag === 'I';
-            const isUnderline = underline || tag === 'U';
-            
-            if (tag === 'BR') {
-                segments.push({ text: '\n', bold, italic, underline });
-            } else {
-                for (const child of node.childNodes) {
-                    traverse(child, isBold, isItalic, isUnderline);
-                }
-            }
-        }
-    }
-    
-    traverse(temp);
-    return segments;
-}
-
-function measureSegment(ctx, segment, baseFontSize, baseFont, baseBold, baseItalic) {
-    const weight = segment.bold || baseBold ? 'bold' : 'normal';
-    const style = segment.italic || baseItalic ? 'italic' : 'normal';
-    ctx.font = `${style} ${weight} ${baseFontSize}px '${baseFont}', sans-serif`;
-    return ctx.measureText(segment.text).width;
-}
-
-function wrapFormattedText(ctx, segments, maxWidth, baseFontSize, baseFont, baseBold, baseItalic) {
-    const lines = [];
-    let currentLine = [];
-    let currentWidth = 0;
-    
-    for (const segment of segments) {
-        const words = segment.text.split(' ');
-        
-        for (let i = 0; i < words.length; i++) {
-            const word = words[i];
-            const wordSegment = { ...segment, text: word };
-            const spaceSegment = { ...segment, text: ' ' };
-            
-            const wordWidth = measureSegment(ctx, wordSegment, baseFontSize, baseFont, baseBold, baseItalic);
-            const spaceWidth = i < words.length - 1 ? measureSegment(ctx, spaceSegment, baseFontSize, baseFont, baseBold, baseItalic) : 0;
-            
-            if (currentWidth + wordWidth > maxWidth && currentLine.length > 0) {
-                lines.push(currentLine);
-                currentLine = [wordSegment];
-                currentWidth = wordWidth;
-            } else {
-                currentLine.push(wordSegment);
-                currentWidth += wordWidth;
-            }
-            
-            if (i < words.length - 1 && spaceWidth > 0) {
-                currentLine.push(spaceSegment);
-                currentWidth += spaceWidth;
-            }
-        }
-    }
-    
-    if (currentLine.length > 0) {
-        lines.push(currentLine);
-    }
-    
-    return lines;
-}
-
-function drawFormattedLine(ctx, segments, x, y, baseFontSize, baseFont, baseBold, baseItalic, textAlign) {
-    let totalWidth = 0;
-    for (const seg of segments) {
-        totalWidth += measureSegment(ctx, seg, baseFontSize, baseFont, baseBold, baseItalic);
-    }
-    
-    let currentX = x;
-    if (textAlign === 'center') {
-        currentX = x - totalWidth / 2;
-    } else if (textAlign === 'right') {
-        currentX = x - totalWidth;
-    }
-    
-    for (const segment of segments) {
-        const weight = segment.bold || baseBold ? 'bold' : 'normal';
-        const style = segment.italic || baseItalic ? 'italic' : 'normal';
-        ctx.font = `${style} ${weight} ${baseFontSize}px '${baseFont}', sans-serif`;
-        
-        ctx.fillText(segment.text, currentX, y);
-        
-        if (segment.underline) {
-            const metrics = ctx.measureText(segment.text);
-            const underlineY = y + baseFontSize * 0.1;
-            ctx.save();
-            ctx.strokeStyle = ctx.fillStyle;
-            ctx.lineWidth = Math.max(1, baseFontSize * 0.05);
-            ctx.beginPath();
-            ctx.moveTo(currentX, underlineY);
-            ctx.lineTo(currentX + metrics.width, underlineY);
-            ctx.stroke();
-            ctx.restore();
-        }
-        
-        currentX += measureSegment(ctx, segment, baseFontSize, baseFont, baseBold, baseItalic);
-    }
-}
-
 function drawText(ctx, width, height, slide) {
   const scaleFactor = width / PREVIEW_WIDTH;
   
@@ -4082,11 +3786,13 @@ function drawText(ctx, width, height, slide) {
       ? slide.titleLineHeight 
       : 1.2;
     
-    const titleSegments = parseFormattedHTML(slide.title);
-    titleLines = wrapFormattedText(ctx, titleSegments, contentWidth, titleFontSize, slide.titleFont, slide.titleBold, slide.titleItalic);
+    ctx.font = `${slide.titleItalic ? 'italic' : 'normal'} ${slide.titleBold ? 'bold' : 'normal'} ${titleFontSize}px '${slide.titleFont}', sans-serif`;
+    titleLines = wrapText(ctx, slide.title, contentWidth);
     titleLineStep = titleFontSize * titleLH;
     
-    titleBlockHeight = titleLines.length * titleLineStep;
+    titleBlockHeight = titleLines.reduce((sum, line) => {
+      return sum + titleLineStep;
+    }, 0);
   }
 
   let textLines = [];
@@ -4099,11 +3805,13 @@ function drawText(ctx, width, height, slide) {
       ? slide.textLineHeight
       : 1.5;
     
-    const textSegments = parseFormattedHTML(slide.text);
-    textLines = wrapFormattedText(ctx, textSegments, contentWidth, textFontSize, slide.textFont, slide.textBold, slide.textItalic);
+    ctx.font = `${slide.textItalic ? 'italic' : 'normal'} ${slide.textBold ? 'bold' : 'normal'} ${textFontSize}px '${slide.textFont}', sans-serif`;
+    textLines = wrapText(ctx, slide.text, contentWidth);
     textLineStep = textFontSize * textLH;
     
-    textBlockHeight = textLines.length * textLineStep;
+    textBlockHeight = textLines.reduce((sum, line) => {
+      return sum + textLineStep;
+    }, 0);
   }
 
   const hasTitle = (titleLines.length > 0);
@@ -4159,8 +3867,8 @@ function drawText(ctx, width, height, slide) {
 
     const titleLineHeight = titleFontSize * titleLH;
     for (const line of titleLines) {
-      if (line && line.length > 0) {
-        drawFormattedLine(ctx, line, titleX, currentY, titleFontSize, slide.titleFont, slide.titleBold, slide.titleItalic, titleHorizontal);
+      if (line !== '') {
+        ctx.fillText(line, titleX, currentY);
       }
       currentY += titleLineHeight;
     }
@@ -4205,8 +3913,8 @@ function drawText(ctx, width, height, slide) {
 
     const textLineHeight = textFontSize * textLH;
     for (const line of textLines) {
-      if (line && line.length > 0) {
-        drawFormattedLine(ctx, line, textX, currentY, textFontSize, slide.textFont, slide.textBold, slide.textItalic, textHorizontal);
+      if (line !== '') {
+        ctx.fillText(line, textX, currentY);
       }
       currentY += textLineHeight;
     }
@@ -4280,7 +3988,7 @@ function renderSlide() {
     
     if (shouldShowTitle) {
         title.style.display = 'block';
-        title.innerHTML = sanitizeHTML(slide.title).replace(/ {2,}/g, ' ');
+        title.textContent = slide.title;
         title.style.fontSize = `${slide.titleSize}px`;
         title.style.color = slide.titleColor || '#000000';
         title.style.fontFamily = `'${slide.titleFont}', sans-serif`;
@@ -4289,7 +3997,7 @@ function renderSlide() {
         title.style.lineHeight = slide.titleLineHeight;
         title.style.whiteSpace = 'pre-wrap';
         title.style.textAlign = titleHorizontal;
-        title.style.marginBottom = slide.text ? '16px' : '0';
+        
     } else {
         title.style.display = 'none';
     }
@@ -4297,7 +4005,7 @@ function renderSlide() {
     const textHorizontal = slide.textAlignment?.horizontal || 'left';
     if (slide.text && slide.text.trim()) {
         text.style.display = 'block';
-        text.innerHTML = sanitizeHTML(slide.text).replace(/ {2,}/g, ' ');
+        text.textContent = slide.text;
         text.style.fontSize = `${slide.textSize}px`;
         text.style.color = slide.textColor;
         text.style.fontFamily = `'${slide.textFont}', sans-serif`;
@@ -4321,7 +4029,7 @@ function renderSlide() {
 }
 
 function wrapText(ctx, text, maxWidth) {
-    const normalizedText = text.replace(/ {2,}/g, ' ');
+    const normalizedText = text;
     
     const paragraphs = normalizedText.split('\n');
     const lines = [];
@@ -4351,9 +4059,7 @@ function wrapText(ctx, text, maxWidth) {
             lines.push(currentLine);
         }
         
-        if (pIndex < paragraphs.length - 1) {
-            lines.push('');
-        }
+        
     });
     
     return lines;
@@ -4655,348 +4361,6 @@ function importSlides(newSlides) {
     updateDeleteButton();
 }
 
-// === ЛОГИКА ФОРМАТИРОВАНИЯ ТЕКСТА ===
-
-let currentSelection = null;
-const toolbar = document.getElementById('formattingToolbar');
-const textInput = document.getElementById('unifiedTextInput');
-
-// Selection event handler
-document.addEventListener('selectionchange', () => {
-    const selection = window.getSelection();
-    
-    if (!selection || selection.isCollapsed) {
-        toolbar.classList.remove('active');
-        return;
-    }
-    
-    const anchor = selection.anchorNode;
-    if (!anchor) return;
-    
-    const parent = anchor.parentElement || anchor;
-    if (!textInput || !textInput.contains(parent)) {
-        toolbar.classList.remove('active');
-        return;
-    }
-    
-    currentSelection = selection;
-    showFormattingToolbar();
-    updateToolbarButtonStates();
-});
-
-// Show toolbar
-function showFormattingToolbar() {
-    if (!currentSelection || currentSelection.isCollapsed) return;
-    
-    const range = currentSelection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-    
-    if (rect.width === 0 && rect.height === 0) return;
-    
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    
-    const toolbarHeight = 50;
-    const offset = 8;
-    
-    let top = rect.top + scrollTop - toolbarHeight - offset;
-    let left = rect.left + scrollLeft + (rect.width / 2) - (toolbar.offsetWidth / 2);
-    
-    if (top < scrollTop) {
-        top = rect.bottom + scrollTop + offset;
-    }
-    
-    left = Math.max(8, Math.min(left, window.innerWidth - toolbar.offsetWidth - 8));
-    
-    toolbar.style.top = top + 'px';
-    toolbar.style.left = left + 'px';
-    toolbar.classList.add('active');
-}
-
-// Update button states
-function updateToolbarButtonStates() {
-    if (!currentSelection) return;
-    
-    const formatStates = getSelectionFormats();
-    
-    document.querySelectorAll('.format-btn').forEach(btn => {
-        const format = btn.dataset.format;
-        if (format === 'clear') {
-            btn.classList.remove('active');
-        } else {
-            btn.classList.toggle('active', formatStates[format] || false);
-        }
-    });
-}
-
-// Get current format states
-function getSelectionFormats() {
-    if (!currentSelection) return {};
-    
-    const anchor = currentSelection.anchorNode;
-    const focus = currentSelection.focusNode;
-    
-    let node = anchor.parentElement || anchor;
-    const formats = { bold: false, italic: false, underline: false };
-    
-    while (node && node !== textInput) {
-        const tag = node.tagName;
-        if (tag === 'STRONG' || tag === 'B') formats.bold = true;
-        if (tag === 'EM' || tag === 'I') formats.italic = true;
-        if (tag === 'U') formats.underline = true;
-        node = node.parentElement;
-    }
-    
-    return formats;
-}
-
-// Apply formatting
-document.querySelectorAll('.format-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const format = btn.dataset.format;
-        applyFormatting(format);
-        
-        setTimeout(() => {
-            if (currentSelection) {
-                showFormattingToolbar();
-                updateToolbarButtonStates();
-            }
-        }, 10);
-    });
-});
-
-function applyFormatting(format) {
-    if (!currentSelection) return;
-    
-    const selection = window.getSelection();
-    if (!selection.rangeCount) return;
-    
-    const range = selection.getRangeAt(0);
-    
-    if (format === 'clear') {
-        clearAllFormatting(range);
-        textInput.dispatchEvent(new Event('input', { bubbles: true }));
-        
-        // Обновляем currentSelection после очистки
-        currentSelection = window.getSelection();
-        
-        // Обновляем состояние кнопок
-        setTimeout(() => {
-            updateToolbarButtonStates();
-        }, 10);
-        
-        return;
-    }
-    
-    const tagMap = {
-        'bold': 'STRONG',
-        'italic': 'EM',
-        'underline': 'U'
-    };
-    
-    const tagName = tagMap[format];
-    if (!tagName) return;
-    
-    const formats = getSelectionFormats();
-    const isActive = formats[format];
-    
-    if (isActive) {
-        removeFormatting(range, tagName);
-    } else {
-        addFormatting(range, tagName);
-    }
-    
-    textInput.dispatchEvent(new Event('input', { bubbles: true }));
-    
-    // 🔥 ДОБАВЛЕНО: Обновляем currentSelection после любого форматирования
-    currentSelection = window.getSelection();
-    
-    // Обновляем состояние кнопок панели
-    setTimeout(() => {
-        updateToolbarButtonStates();
-    }, 10);
-}
-
-function addFormatting(range, tagName) {
-    const fragment = range.extractContents();
-    const wrapper = document.createElement(tagName);
-    wrapper.appendChild(fragment);
-    range.insertNode(wrapper);
-    
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    const newRange = document.createRange();
-    newRange.selectNodeContents(wrapper);
-    selection.addRange(newRange);
-    
-    // 🔥 ДОБАВЛЕНО: Обновляем глобальную переменную
-    currentSelection = selection;
-}
-
-function removeFormatting(range, tagName) {
-    let node = range.commonAncestorContainer;
-    if (node.nodeType === Node.TEXT_NODE) {
-        node = node.parentElement;
-    }
-    
-    let targetNode = null;
-    let tempNode = node;
-    
-    // Находим узел с форматированием
-    while (tempNode && tempNode !== textInput) {
-        if (tempNode.tagName === tagName) {
-            targetNode = tempNode;
-            break;
-        }
-        tempNode = tempNode.parentElement;
-    }
-    
-    if (targetNode) {
-        const parent = targetNode.parentElement;
-        const childNodes = Array.from(targetNode.childNodes);
-        
-        // Сохраняем первый и последний узел для восстановления выделения
-        const firstNode = childNodes[0];
-        const lastNode = childNodes[childNodes.length - 1];
-        
-        // Перемещаем все дочерние узлы
-        while (targetNode.firstChild) {
-            parent.insertBefore(targetNode.firstChild, targetNode);
-        }
-        parent.removeChild(targetNode);
-        
-        // Восстанавливаем выделение
-        if (firstNode && lastNode) {
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            const newRange = document.createRange();
-            
-            try {
-                if (firstNode.nodeType === Node.TEXT_NODE) {
-                    newRange.setStart(firstNode, 0);
-                } else {
-                    newRange.setStartBefore(firstNode);
-                }
-                
-                if (lastNode.nodeType === Node.TEXT_NODE) {
-                    newRange.setEnd(lastNode, lastNode.length || lastNode.textContent.length);
-                } else {
-                    newRange.setEndAfter(lastNode);
-                }
-                
-                selection.addRange(newRange);
-                
-                // 🔥 ДОБАВЛЕНО: Обновляем глобальную переменную
-                currentSelection = selection;
-            } catch (e) {
-                console.log('Selection error:', e);
-            }
-        }
-    }
-}
-
-function clearAllFormatting(range) {
-    const fragment = range.extractContents();
-    
-    function removeFormattingTags(node) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            return node.cloneNode(true);
-        }
-        
-        if (node.nodeType === Node.ELEMENT_NODE) {
-            const tagName = node.tagName;
-            if (tagName === 'STRONG' || tagName === 'B' || tagName === 'EM' || tagName === 'I' || tagName === 'U') {
-                const tempDiv = document.createDocumentFragment();
-                Array.from(node.childNodes).forEach(child => {
-                    tempDiv.appendChild(removeFormattingTags(child));
-                });
-                return tempDiv;
-            } else {
-                const newNode = node.cloneNode(false);
-                Array.from(node.childNodes).forEach(child => {
-                    newNode.appendChild(removeFormattingTags(child));
-                });
-                return newNode;
-            }
-        }
-        
-        return node.cloneNode(true);
-    }
-    
-    const cleanedFragment = document.createDocumentFragment();
-    Array.from(fragment.childNodes).forEach(child => {
-        cleanedFragment.appendChild(removeFormattingTags(child));
-    });
-    
-    const childNodes = Array.from(cleanedFragment.childNodes);
-    const firstNode = childNodes[0];
-    const lastNode = childNodes[childNodes.length - 1];
-    
-    range.insertNode(cleanedFragment);
-    
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    
-    if (firstNode && lastNode) {
-        const newRange = document.createRange();
-        try {
-            if (firstNode.nodeType === Node.TEXT_NODE) {
-                newRange.setStart(firstNode, 0);
-            } else {
-                newRange.setStartBefore(firstNode);
-            }
-            
-            if (lastNode.nodeType === Node.TEXT_NODE) {
-                newRange.setEnd(lastNode, lastNode.length || lastNode.textContent.length);
-            } else {
-                newRange.setEndAfter(lastNode);
-            }
-            
-            selection.addRange(newRange);
-            currentSelection = selection;
-        } catch (e) {
-            console.log('Selection error:', e);
-        }
-    }
-    
-}
-
-// Hide toolbar on modal close
-const textModal = document.getElementById('textModal');
-if (textModal) {
-    const originalCloseModal = window.closeModal;
-    window.closeModal = function(type) {
-        if (type === 'text') {
-            toolbar.classList.remove('active');
-        }
-        if (originalCloseModal) {
-            originalCloseModal(type);
-        }
-    };
-}
-
-// Touch support
-let touchStartTime = 0;
-textInput?.addEventListener('touchstart', () => {
-    touchStartTime = Date.now();
-});
-
-textInput?.addEventListener('touchend', () => {
-    const touchDuration = Date.now() - touchStartTime;
-    if (touchDuration > 500) {
-        setTimeout(() => {
-            const selection = window.getSelection();
-            if (selection && !selection.isCollapsed) {
-                showFormattingToolbar();
-                updateToolbarButtonStates();
-            }
-        }, 100);
-    }
-});
-
 init();
 
 document.addEventListener('click', function(event) {
@@ -5007,6 +4371,4 @@ document.addEventListener('click', function(event) {
         menu.classList.remove('active');
     }
 });
-
-        //в этой версии работают 3 кнопки. И если второй выделить работает метелка
 </script>
