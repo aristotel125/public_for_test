@@ -3789,7 +3789,10 @@ if (shouldShowTitle) {
   ctx.font = `${slide.titleItalic ? 'italic' : 'normal'} ${slide.titleBold ? 'bold' : 'normal'} ${titleFontSize}px '${slide.titleFont}', sans-serif`;
   titleLines = wrapText(ctx, slide.title, contentWidth);
   titleLineStep = titleFontSize * titleLH;
-  titleBlockHeight = titleLines.length * titleLineStep;
+  
+  // ✅ ИСПРАВЛЕНИЕ: убираем пустое пространство сверху первой строки и снизу последней
+  const titleFirstLineOffset = (titleLineStep - titleFontSize) / 2;
+  titleBlockHeight = titleLines.length * titleLineStep - 2 * titleFirstLineOffset;
 }
 
 let textLines = [];
@@ -3805,7 +3808,10 @@ if (slide.text && slide.text.trim()) {
   ctx.font = `${slide.textItalic ? 'italic' : 'normal'} ${slide.textBold ? 'bold' : 'normal'} ${textFontSize}px '${slide.textFont}', sans-serif`;
   textLines = wrapText(ctx, slide.text, contentWidth);
   textLineStep = textFontSize * textLH;
-  textBlockHeight = textLines.length * textLineStep;
+  
+  // ✅ ИСПРАВЛЕНИЕ: убираем пустое пространство сверху первой строки и снизу последней
+  const textFirstLineOffset = (textLineStep - textFontSize) / 2;
+  textBlockHeight = textLines.length * textLineStep - 2 * textFirstLineOffset;
 }
 
 // Сразу после этого должен идти расчёт totalBlockHeight:
@@ -3835,6 +3841,10 @@ const totalBlockHeight = (hasTitle ? titleBlockHeight : 0)
       ? slide.titleLineHeight 
       : 1.2;
     
+    // ✅ КОМПЕНСАЦИЯ первой строки
+    const firstLineOffset = (titleLineStep - titleFontSize) / 2;
+    currentY += firstLineOffset;
+    
     if (slide.textShadow) {
       ctx.shadowColor = slide.shadowColor || '#000000';
       ctx.shadowBlur = (slide.shadowBlur || 4) * scaleFactor;
@@ -3862,13 +3872,16 @@ const totalBlockHeight = (hasTitle ? titleBlockHeight : 0)
       titleX = width / 2;
     }
 
-    const titleLineHeight = slide.titleSize * scaleFactor * titleLH;
+    const titleLineHeight = titleLineStep;
     for (const line of titleLines) {
       if (line !== '') {
         ctx.fillText(line, titleX, currentY);
       }
       currentY += titleLineHeight;
     }
+    
+    // ✅ КОМПЕНСАЦИЯ после последней строки
+    currentY -= firstLineOffset;
   }
 
   if (hasTitle && hasText) {
@@ -3880,6 +3893,10 @@ const totalBlockHeight = (hasTitle ? titleBlockHeight : 0)
     const textLH = (typeof slide.textLineHeight === 'number' && slide.textLineHeight > 0)
       ? slide.textLineHeight
       : 1.5;
+    
+    // ✅ КОМПЕНСАЦИЯ первой строки
+    const firstLineOffset = (textLineStep - textFontSize) / 2;
+    currentY += firstLineOffset;
     
     if (slide.textShadow) {
       ctx.shadowColor = slide.shadowColor || '#000000';
@@ -3908,13 +3925,17 @@ const totalBlockHeight = (hasTitle ? titleBlockHeight : 0)
       textX = width / 2;
     }
 
-    const textLineHeight = slide.textSize * scaleFactor * textLH;
+const textLineHeight = textLineStep;
+
     for (const line of textLines) {
       if (line !== '') {
         ctx.fillText(line, textX, currentY);
       }
       currentY += textLineHeight;
     }
+    
+    // ✅ КОМПЕНСАЦИЯ после последней строки
+    currentY -= firstLineOffset;
   }
 
   ctx.shadowColor = 'transparent';
