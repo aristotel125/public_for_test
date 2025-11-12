@@ -142,7 +142,7 @@
                                     
                                     <div class="slider-group">
                                         <label>Масштаб: <span id="scaleValue">20px</span></label>
-                                        <input type="range" class="slider" min="10" max="50" value="20" 
+                                        <input type="range" class="slider" min="60" max="240" value="66" 
                                                oninput="updatePatternScale(this.value)">
                                     </div>
                                 </div>
@@ -2243,7 +2243,7 @@ let slides = [
         titleColor: '#000000',
         pattern: null,
         patternOpacity: 0.3,
-        patternScale: 20,
+        patternScale: 66,
         isTitle: true,
         noTitle: false,
         titleFont: 'Montserrat',
@@ -2470,15 +2470,15 @@ function makeDefaultSlide() {
   return {
     title: 'Заголовок слайда',
     text: 'Это основной текст для вашего слайда.',
-    titleSize: 48,
-    textSize: 16,
+    titleSize: 106,
+    textSize: 53,
     bgColor: '#ffffff',
     bgImage: null,
     textColor: '#000000',
     titleColor: '#000000',
     pattern: null,
     patternOpacity: 0.3,
-    patternScale: 20,
+    patternScale: 66,
     isTitle: true,
     noTitle: false,
     titleFont: 'Montserrat',
@@ -2643,7 +2643,7 @@ function addSlide() {
         text: '',
         isTitle: false,
         noTitle: false,
-        titleSize: 32,
+        titleSize: 106,
         titleColor: lastSlide.titleColor || '#000000',
         contentAlignment: { ...lastSlide.contentAlignment },
         titleAlignment: { ...lastSlide.titleAlignment },
@@ -3950,14 +3950,14 @@ function renderSlide() {
         bg.style.backgroundColor = slide.bgColor;
     }
 
-    if (slide.pattern !== null) {
-        const patternData = patterns[slide.pattern];
-        if (patternData && patternData.css) {
-            pattern.style.backgroundImage = patternData.css;
-            pattern.style.color = slide.textColor;
-            pattern.style.opacity = slide.patternOpacity;
-            pattern.style.backgroundSize = `${slide.patternScale}px ${slide.patternScale}px`;
-            pattern.style.display = 'block';
+   if (slide.pattern !== null) {
+    const patternData = patterns[slide.pattern];
+    if (patternData && patternData.css) {
+        pattern.style.backgroundImage = patternData.css;
+        pattern.style.color = slide.textColor;
+        pattern.style.opacity = slide.patternOpacity;
+        pattern.style.backgroundSize = `${slide.patternScale * scale}px ${slide.patternScale * scale}px`;
+        pattern.style.display = 'block';
         } else {
             pattern.style.display = 'none';
         }
@@ -4316,15 +4316,15 @@ function parseImportText(text) {
         const newSlide = {
             title: title || 'Заголовок слайда',
             text: bodyText || '',
-            titleSize: 32,
-            textSize: 16,
+            titleSize: 106,
+            textSize: 53,
             bgColor: '#ffffff',
             bgImage: null,
             textColor: '#000000',
             titleColor: '#000000',
             pattern: null,
             patternOpacity: 0.3,
-            patternScale: 20,
+            patternScale: 66,
             isTitle: isFirstSlide,
             noTitle: false,
             titleFont: 'Montserrat',
