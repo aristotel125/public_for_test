@@ -4061,16 +4061,22 @@ function getExportDimensions() {
             const paddingLeftPx = dims.width * horizontalPaddingPercent;
             const paddingRightPx = dims.width * horizontalPaddingPercent;
             
-            console.log('=== EXPORT SLIDE DEBUG ===');
-            console.log('Export dims:', dims);
-            console.log('slide.titleSize (EXPORT):', slide.titleSize);
-            console.log('slide.textSize (EXPORT):', slide.textSize);
-            console.log('Paddings (export):');
-            console.log('  paddingTop:', paddingTopPx);
-            console.log('  paddingBottom:', paddingBottomPx);
-            console.log('  paddingLeft:', paddingLeftPx);
-            console.log('  paddingRight:', paddingRightPx);
-            console.log('==========================');
+          // 🔍 ДЕТАЛЬНАЯ ОТЛАДКА EXPORT
+console.log('=== EXPORT DEBUG ===');
+console.log('Export dims:', dims);
+console.log('slide.titleSize (RAW):', slide.titleSize);
+console.log('slide.textSize (RAW):', slide.textSize);
+console.log('slide.titleLineHeight (RAW):', slide.titleLineHeight);
+console.log('slide.textLineHeight (RAW):', slide.textLineHeight);
+console.log('Title line-height (px):', slide.titleLineHeight * slide.titleSize);
+console.log('Text line-height (px):', slide.textLineHeight * slide.textSize);
+console.log('Gap между title и text: 53px');
+console.log('Paddings (export):');
+console.log('  paddingTop:', paddingTopPx, 'px');
+console.log('  paddingBottom:', paddingBottomPx, 'px');
+console.log('  paddingLeft:', paddingLeftPx, 'px');
+console.log('  paddingRight:', paddingRightPx, 'px');
+console.log('====================');
             
             // Создаём временный контейнер для рендера
             const tempContainer = document.createElement('div');
@@ -4129,7 +4135,7 @@ function getExportDimensions() {
                             font-family: '${slide.titleFont}', sans-serif;
                             font-weight: ${slide.titleBold ? '700' : '400'};
                             font-style: ${slide.titleItalic ? 'italic' : 'normal'};
-                            line-height: ${slide.titleLineHeight};
+                            line-height: ${slide.titleLineHeight * slide.titleSize}px;
                             text-align: ${slide.titleAlignment?.horizontal || 'center'};
                             white-space: pre-wrap;
                             word-break: break-word;
@@ -4145,7 +4151,7 @@ function getExportDimensions() {
                             font-family: '${slide.textFont}', sans-serif;
                             font-weight: ${slide.textBold ? '700' : '400'};
                             font-style: ${slide.textItalic ? 'italic' : 'normal'};
-                            line-height: ${slide.textLineHeight};
+                            line-height: ${slide.textLineHeight * slide.textSize}px;
                             text-align: ${slide.textAlignment?.horizontal || 'left'};
                             white-space: pre-wrap;
                             word-break: break-word;
@@ -4488,15 +4494,26 @@ function renderSlide() {
     const canvas = document.getElementById('slideCanvas');
     const scale = canvas.offsetWidth / 1080;
     
-    // 🔍 ВРЕМЕННАЯ ОТЛАДКА
-    console.log('=== RENDER SLIDE DEBUG ===');
-    console.log('canvas.offsetWidth:', canvas.offsetWidth);
-    console.log('scale:', scale);
-    console.log('slide.titleSize (RAW):', slide.titleSize);
-    console.log('slide.textSize (RAW):', slide.textSize);
-    console.log('slide.titleSize * scale:', slide.titleSize * scale);
-    console.log('slide.textSize * scale:', slide.textSize * scale);
-    console.log('==========================');
+    // 🔍 ДЕТАЛЬНАЯ ОТЛАДКА PREVIEW
+console.log('=== PREVIEW DEBUG ===');
+console.log('canvas.offsetWidth:', canvas.offsetWidth);
+console.log('canvas.offsetHeight:', canvas.offsetHeight);
+console.log('scale:', scale);
+console.log('slide.titleSize (RAW):', slide.titleSize);
+console.log('slide.textSize (RAW):', slide.textSize);
+console.log('slide.titleSize * scale:', slide.titleSize * scale);
+console.log('slide.textSize * scale:', slide.textSize * scale);
+console.log('slide.titleLineHeight (RAW):', slide.titleLineHeight);
+console.log('slide.textLineHeight (RAW):', slide.textLineHeight);
+console.log('Title line-height (px):', slide.titleLineHeight * slide.titleSize * scale);
+console.log('Text line-height (px):', slide.textLineHeight * slide.textSize * scale);
+console.log('Gap между title и text:', 53 * scale, 'px');
+console.log('Paddings (preview):');
+console.log('  paddingTop:', canvas.offsetHeight * 0.10, 'px');
+console.log('  paddingBottom:', canvas.offsetHeight * 0.10, 'px');
+console.log('  paddingLeft:', canvas.offsetWidth * 0.09, 'px');
+console.log('  paddingRight:', canvas.offsetWidth * 0.09, 'px');
+console.log('=====================');
     const bg = document.getElementById('slideBackground');
     const pattern = document.getElementById('slidePattern');
     const overlay = document.getElementById('slideOverlay');
